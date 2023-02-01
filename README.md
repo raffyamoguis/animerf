@@ -1,6 +1,12 @@
 # AnimeRf
 ### Anime Library for watching anime online for free with no ads.
 
+![image](https://user-images.githubusercontent.com/86818651/215948289-6887c2ea-5bf4-45b9-9635-112678241bd6.png)
+
+This application is still in development stay tuned.
+
+I'm open for suggestion and collaboration just message me.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
