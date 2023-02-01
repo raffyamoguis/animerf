@@ -1,28 +1,16 @@
 import React from 'react';
-import {
-  MediaQuery,
-  Burger,
-  Text,
-  Group,
-  ActionIcon,
-  Title,
-} from '@mantine/core';
-import { IconMenu2 } from '@tabler/icons-react';
+import { Group } from '@mantine/core';
+import AppName from './AppName';
+import SearchBar from './SearchBar';
+import Menu from './Menu';
 
 const Header = () => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-      <Group position='apart'>
-        <Group>
-          <ActionIcon size='xl' radius='xl'>
-            <IconMenu2 size={26} />
-          </ActionIcon>
-          <Title order={3} color='yellow'>
-            AnimeRf
-          </Title>
-        </Group>
-      </Group>
-    </div>
+    <Group position='apart' sx={{ height: '100%' }}>
+      <AppName />
+      <SearchBar />
+      <Menu />
+    </Group>
   );
 };
 
