@@ -1,10 +1,12 @@
 import React from 'react';
-import { Text } from '@mantine/core';
+import { Title, Paper } from '@mantine/core';
 import Layout from '@/components/layout/Layout';
 export default function Browse() {
   return (
     <Layout>
-      <Text>Browse Page</Text>
+      <Paper shadow='xs' p='md'>
+        <Title order={5}>Browse Page</Title>
+      </Paper>
     </Layout>
   );
 }
