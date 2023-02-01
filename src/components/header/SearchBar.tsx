@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Group, TextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
+import SearchModal from './SearchModal';
 
 const SearchBar = () => {
+  const [opened, setOpened] = useState<boolean>(false);
+
+  //   useEffect(() => {
+  //     fetchAnime();
+  //   }, [search]);
+
+  //   async function fetchAnime() {
+  //     try {
+  //       const result = await axios.get(
+  //         `http://localhost:1111/anime/zoro/${search}`
+  //       );
+  //       setAnimeData(result.data.results);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
   return (
     <div
       style={{
@@ -11,6 +28,7 @@ const SearchBar = () => {
         height: '100%',
       }}
     >
+      <SearchModal open={opened} setOpen={setOpened} />
       <Group align='center'>
         <TextInput
           sx={{ width: '400px' }}
@@ -18,6 +36,7 @@ const SearchBar = () => {
           radius='xl'
           size='md'
           icon={<IconSearch size={18} />}
+          onClick={() => setOpened(true)}
         />
       </Group>
     </div>
