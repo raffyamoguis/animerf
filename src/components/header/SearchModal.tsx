@@ -9,6 +9,7 @@ import {
   Avatar,
   HoverCard,
   Loader,
+  Divider,
 } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import axios from 'axios';
@@ -26,6 +27,7 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
   useEffect(() => {
     fetchAnime();
     if (search === '') setAnimeData([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   async function fetchAnime() {
@@ -68,6 +70,7 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
         onChange={(e) => setSearch(e.target.value)}
         rightSection={loader ? <Loader size='xs' color='yellow' /> : null}
       />
+      <Divider />
 
       {search === '' ? (
         <Text mt='lg' ta='center'>
