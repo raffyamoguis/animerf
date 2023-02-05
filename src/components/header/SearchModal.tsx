@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Modal,
   Text,
@@ -10,6 +11,7 @@ import {
   HoverCard,
   Loader,
   Divider,
+  Anchor,
 } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import axios from 'axios';
@@ -104,7 +106,13 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
                 <Avatar src={items.image} radius='xl' size={50} />
                 <HoverCard>
                   <HoverCard.Target>
-                    <Text>{trimTitle(items.title)}</Text>
+                    <Anchor
+                      href={`/search/${items.id}`}
+                      component={Link}
+                      onClick={() => closeModal()}
+                    >
+                      <Text>{trimTitle(items.title)}</Text>
+                    </Anchor>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
                     <Text size='sm'>{items.title}</Text>
