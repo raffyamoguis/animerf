@@ -19,6 +19,8 @@ interface Props {
   setOpen: (o: boolean) => void;
 }
 
+const searchUri = `${process.env.API_HOST}/anime/gogoanime/`;
+
 const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
   const [search, setSearch] = useState<string>('');
   const [loader, setLoader] = useState<boolean>(false);
@@ -33,9 +35,7 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
   async function fetchAnime() {
     try {
       setLoader(true);
-      const result = await axios.get(
-        `http://localhost:1111/anime/zoro/${search}`
-      );
+      const result = await axios.get(`${searchUri}${search}`);
       setAnimeData(result.data.results);
     } catch (error) {
       console.log(error);
