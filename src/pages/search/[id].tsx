@@ -9,11 +9,11 @@ import {
   Flex,
   Badge,
   Group,
-  Box,
-  Stack,
-  ScrollArea,
+  Select,
 } from '@mantine/core';
+import ReactPlayer from 'react-player';
 import Layout from '@/components/layout/Layout';
+import EpisodeList from '@/components/anime/EpisodeList';
 
 const animeInfoUri = `${process.env.API_HOST}/anime/gogoanime/info`;
 
@@ -22,6 +22,9 @@ export default function Anime() {
   const { id } = router.query;
 
   const [animeInfo, setAnimeInfo] = useState<any>([]);
+  const [sources, setSources] = useState<any>([]);
+
+  console.log(sources);
 
   useEffect(() => {
     async function fetchAnimeInfo() {
@@ -91,47 +94,25 @@ export default function Anime() {
 
         {/* Episodes */}
         <Group position='left'>
+          <EpisodeList episodes={animeInfo.episodes} setSources={setSources} />
+          {/* <ReactPlayer
+            url='https://www.youtube.com/watch?v=DcxDegQkFIo'
+            width={1200}
+            height={400}
+            playing
+            controls
+          /> */}
           <div>
-            <Text fw={600} mt='md'>
-              Episode Lists
-            </Text>
-            <ScrollArea style={{ height: 450 }}>
-              <Stack
-                justify='flex-start'
-                spacing={1}
-                sx={(theme) => ({
-                  width: 200,
-                })}
-              >
-                {animeInfo.episodes?.map((items: any) => (
-                  <Box
-                    key={items.id}
-                    sx={(theme) => ({
-                      backgroundColor:
-                        theme.colorScheme === 'dark'
-                          ? theme.colors.dark[6]
-                          : theme.colors.gray[0],
-                      textAlign: 'center',
-                      padding: theme.spacing.sm,
-                      borderRadius: theme.radius.sm,
-                      cursor: 'pointer',
-
-                      '&:hover': {
-                        backgroundColor:
-                          theme.colorScheme === 'dark'
-                            ? theme.colors.dark[5]
-                            : theme.colors.gray[1],
-                      },
-                      marginTop: '5px',
-                    })}
-                  >
-                    <Text>Episode {items.number}</Text>
-                  </Box>
-                ))}
-              </Stack>
-            </ScrollArea>
+            <Select
+              placeholder='Select Quality'
+              data={[
+                { value: 'react', label: 'React' },
+                { value: 'ng', label: 'Angular' },
+                { value: 'svelte', label: 'Svelte' },
+                { value: 'vue', label: 'Vue' },
+              ]}
+            />
           </div>
-          <Text>Right Side</Text>
         </Group>
       </Paper>
     </Layout>
