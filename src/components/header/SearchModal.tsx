@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Modal,
@@ -14,6 +14,7 @@ import {
   Anchor,
 } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
+import { useQuery } from 'react-query';
 import axios from 'axios';
 
 interface Props {
@@ -25,29 +26,23 @@ const searchUri = `${process.env.API_HOST}/anime/gogoanime/`;
 
 const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
   const [search, setSearch] = useState<string>('');
-  const [loader, setLoader] = useState<boolean>(false);
-  const [animeData, setAnimeData] = useState<any>([]);
 
-  useEffect(() => {
-    fetchAnime();
-    if (search === '') setAnimeData([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: searchData,
+  } = useQuery(
+    ['search', search],
+    async ({ signal }) => await axios.get(`${searchUri}${search}`, { signal }),
+    { enabled: Boolean(search) }
+  );
 
-  async function fetchAnime() {
-    try {
-      setLoader(true);
-      const result = await axios.get(`${searchUri}${search}`);
-      setAnimeData(result.data.results);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
-    }
+  if (isError) {
+    console.log(error);
   }
 
   function closeModal() {
-    setAnimeData([]);
     setSearch('');
     setOpen(false);
   }
@@ -70,7 +65,7 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
         size='md'
         icon={<IconSearch size={18} />}
         onChange={(e) => setSearch(e.target.value)}
-        rightSection={loader ? <Loader size='xs' color='yellow' /> : null}
+        rightSection={isLoading ? <Loader size='xs' color='yellow' /> : null}
       />
       <Divider />
 
@@ -80,7 +75,7 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
         </Text>
       ) : (
         <ScrollArea style={{ height: 600 }}>
-          {animeData?.map((items: any, index: number) => (
+          {searchData?.data.results?.map((items: any, index: number) => (
             <Box
               key={index}
               sx={(theme) => ({
