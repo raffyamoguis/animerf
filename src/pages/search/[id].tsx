@@ -102,17 +102,6 @@ export default function Anime() {
             playing
             controls
           /> */}
-          <div>
-            <Select
-              placeholder='Select Quality'
-              data={[
-                { value: 'react', label: 'React' },
-                { value: 'ng', label: 'Angular' },
-                { value: 'svelte', label: 'Svelte' },
-                { value: 'vue', label: 'Vue' },
-              ]}
-            />
-          </div>
         </Group>
       </Paper>
     </Layout>

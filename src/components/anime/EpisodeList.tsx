@@ -9,7 +9,10 @@ interface Props {
   setSources: (sources: any) => void;
 }
 const EpisodeList: React.FC<Props> = ({ episodes, setSources }) => {
-  async function handleClick(id: string) {
+  const [active, setActive] = React.useState<number>(0);
+
+  async function handleClick(id: string, index: number) {
+    setActive(index);
     const result = await fetchAnimeStreamingLinks(`${watchAnimeUri}/${id}`);
 
     setSources(result.sources);
@@ -38,7 +41,7 @@ const EpisodeList: React.FC<Props> = ({ episodes, setSources }) => {
             width: 200,
           })}
         >
-          {episodes?.map((items: any) => (
+          {episodes?.map((items: any, index: number) => (
             <Box
               key={items.id}
               sx={(theme) => ({
@@ -59,9 +62,11 @@ const EpisodeList: React.FC<Props> = ({ episodes, setSources }) => {
                 },
                 marginTop: '5px',
               })}
-              onClick={() => handleClick(items.id)}
+              onClick={() => handleClick(items.id, index)}
             >
-              <Text>Episode {items.number}</Text>
+              <Text color={`${index === active ? 'yellow' : null}`}>
+                Episode {items.number}
+              </Text>
             </Box>
           ))}
         </Stack>
