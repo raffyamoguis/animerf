@@ -104,6 +104,8 @@ const SearchModal: React.FC<Props> = ({ open, setOpen }) => {
                     <Anchor
                       href={`/search/${items.id}`}
                       component={Link}
+                      color='dark'
+                      underline={false}
                       onClick={() => closeModal()}
                     >
                       <Text>{trimTitle(items.title)}</Text>
