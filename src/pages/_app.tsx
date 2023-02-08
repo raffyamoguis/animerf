@@ -1,9 +1,11 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import { MantineProvider } from '@mantine/core';
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
+  const queryClient = new QueryClient();
 
   return (
     <>
@@ -25,7 +27,9 @@ export default function App(props: AppProps) {
           headings: { fontFamily: 'Inter, sans-serif' },
         }}
       >
-        <Component {...pageProps} />
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
       </MantineProvider>
     </>
   );
