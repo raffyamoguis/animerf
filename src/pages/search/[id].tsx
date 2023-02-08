@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import {
@@ -10,9 +10,12 @@ import {
   Badge,
   Group,
   Select,
+  Skeleton,
 } from '@mantine/core';
 import ReactPlayer from 'react-player';
+import { useQuery } from 'react-query';
 import Layout from '@/components/layout/Layout';
+import { AnimeInfoLoader } from '@/components/loader/SkeletonLoader';
 import EpisodeList from '@/components/anime/EpisodeList';
 
 const animeInfoUri = `${process.env.API_HOST}/anime/gogoanime/info`;
@@ -21,27 +24,28 @@ export default function Anime() {
   const router = useRouter();
   const { id } = router.query;
 
-  const [animeInfo, setAnimeInfo] = useState<any>([]);
+  // const [animeInfo, setAnimeInfo] = useState<any>([]);
   const [sources, setSources] = useState<any>([]);
 
-  console.log(sources);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: animeInfo,
+  } = useQuery(
+    ['animeInfo', id],
+    async () => (await axios.get(`${animeInfoUri}/${id}`)).data
+  );
 
-  useEffect(() => {
-    async function fetchAnimeInfo() {
-      let componentMounted = true;
+  console.log(animeInfo);
 
-      if (id !== null) {
-        const info = await axios.get(`${animeInfoUri}/${id}`);
-        if (componentMounted) {
-          setAnimeInfo(info.data);
-        }
-      }
-      return () => {
-        componentMounted = false;
-      };
-    }
-    fetchAnimeInfo();
-  }, [id]);
+  if (isLoading) {
+    return (
+      <Layout>
+        <AnimeInfoLoader />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -53,48 +57,52 @@ export default function Anime() {
           <div>
             <Image
               radius='md'
-              src={animeInfo.image}
+              src={animeInfo?.image}
               width={200}
               height={300}
-              alt={animeInfo.title}
+              alt={animeInfo?.title}
             />
           </div>
           <div>
-            <Group mb='sm'>
-              <Text fw={600}>{animeInfo.title}</Text>
-              <Flex>
-                {animeInfo.genres?.map((genre: string, index: number) => (
-                  <Badge key={index} color='yellow'>
-                    {genre}
-                  </Badge>
-                ))}
-              </Flex>
-            </Group>
+            <Skeleton visible={isLoading}>
+              <Group mb='sm'>
+                <Text fw={600}>{animeInfo?.title}</Text>
+
+                <Flex>
+                  {animeInfo?.genres.map((genre: string, index: number) => (
+                    <Badge key={index} color='yellow'>
+                      {genre}
+                    </Badge>
+                  ))}
+                </Flex>
+              </Group>
+            </Skeleton>
 
             <Text>
-              <b>Alternative Name:</b> {animeInfo.otherName}
+              <b>Alternative Name:</b> {animeInfo?.otherName}
             </Text>
             <Text>
-              <b>Year:</b> {animeInfo.releaseDate}
+              <b>Year:</b> {animeInfo?.releaseDate}
+            </Text>
+
+            <Text>
+              <b>Type:</b> {animeInfo?.type}
             </Text>
             <Text>
-              <b>Type:</b> {animeInfo.type}
+              <b>Status:</b> {animeInfo?.status}
             </Text>
             <Text>
-              <b>Status:</b> {animeInfo.status}
+              <b>Total Episodes:</b> {animeInfo?.totalEpisodes}
             </Text>
             <Text>
-              <b>Total Episodes:</b> {animeInfo.totalEpisodes}
-            </Text>
-            <Text lineClamp={4}>
-              <b>Synopsis:</b> {animeInfo.description}
+              <b>Synopsis:</b> {animeInfo?.description}
             </Text>
           </div>
         </Flex>
 
         {/* Episodes */}
         <Group position='left'>
-          <EpisodeList episodes={animeInfo.episodes} setSources={setSources} />
+          <EpisodeList episodes={animeInfo?.episodes} setSources={setSources} />
           {/* <ReactPlayer
             url='https://www.youtube.com/watch?v=DcxDegQkFIo'
             width={1200}
