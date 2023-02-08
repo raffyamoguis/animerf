@@ -11,12 +11,15 @@ import {
   Group,
   Select,
   Skeleton,
+  Center,
 } from '@mantine/core';
 import ReactPlayer from 'react-player';
 import { useQuery } from 'react-query';
 import Layout from '@/components/layout/Layout';
 import { AnimeInfoLoader } from '@/components/loader/SkeletonLoader';
 import EpisodeList from '@/components/anime/EpisodeList';
+import playerStyle from '../../styles/react-player.module.css';
+import { isTemplateSpan } from 'typescript';
 
 const animeInfoUri = `${process.env.API_HOST}/anime/gogoanime/info`;
 
@@ -24,8 +27,10 @@ export default function Anime() {
   const router = useRouter();
   const { id } = router.query;
 
-  // const [animeInfo, setAnimeInfo] = useState<any>([]);
   const [sources, setSources] = useState<any>([]);
+  const [selSource, setSelSource] = useState<string>(sources[0]?.url);
+
+  console.log(selSource);
 
   const {
     isLoading,
@@ -36,8 +41,6 @@ export default function Anime() {
     ['animeInfo', id],
     async () => (await axios.get(`${animeInfoUri}/${id}`)).data
   );
-
-  console.log(animeInfo);
 
   if (isLoading) {
     return (
@@ -94,22 +97,32 @@ export default function Anime() {
             <Text>
               <b>Total Episodes:</b> {animeInfo?.totalEpisodes}
             </Text>
-            <Text>
+            <Text lineClamp={4}>
               <b>Synopsis:</b> {animeInfo?.description}
             </Text>
           </div>
         </Flex>
 
         {/* Episodes */}
-        <Group position='left'>
+        <Group>
           <EpisodeList episodes={animeInfo?.episodes} setSources={setSources} />
-          {/* <ReactPlayer
-            url='https://www.youtube.com/watch?v=DcxDegQkFIo'
-            width={1200}
-            height={400}
-            playing
+          <ReactPlayer
+            className={playerStyle.reactPlayer}
+            url={selSource}
+            width='50%'
             controls
-          /> */}
+          />
+          <div>
+            <Select
+              placeholder='Choose quality'
+              data={sources?.map((items: any, index: number) => ({
+                value: items.url,
+                label: items.quality,
+              }))}
+              value={selSource}
+              onChange={(e) => setSelSource(e)}
+            />
+          </div>
         </Group>
       </Paper>
     </Layout>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, ScrollArea, Box, Stack } from '@mantine/core';
+import { useQuery } from 'react-query';
 import axios from 'axios';
 
 const watchAnimeUri = `${process.env.API_HOST}/anime/gogoanime/watch`;
@@ -10,24 +11,35 @@ interface Props {
 }
 const EpisodeList: React.FC<Props> = ({ episodes, setSources }) => {
   const [active, setActive] = React.useState<number>(0);
+  const [animeId, setAnimeId] = React.useState<string>(episodes[0].id);
+
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    data: animeSources,
+  } = useQuery(
+    ['animeSources', animeId],
+    async () => (await axios.get(`${watchAnimeUri}/${animeId}`)).data,
+    { enabled: !!animeId }
+  );
+
+  if (isLoading) {
+    console.log('fetching episode sources');
+  }
+
+  if (isSuccess) {
+    setSources(animeSources.sources);
+  }
 
   async function handleClick(id: string, index: number) {
     setActive(index);
-    const result = await fetchAnimeStreamingLinks(`${watchAnimeUri}/${id}`);
-
-    setSources(result.sources);
+    setAnimeId(id);
   }
 
-  async function fetchAnimeStreamingLinks(api: string) {
-    try {
-      const streamingLinks = await axios.get(api);
-      return streamingLinks.data;
-    } catch (error) {
-      console.log(error);
-    }
+  // console.log(animeSources);
 
-    return null;
-  }
   return (
     <div>
       <Text fw={600} mt='md'>
